@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunu-idée | Tableau Blanc Collaboratif</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://kit.fontawesome.com/7c86aa274f.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <header class="bg-white py-2 border-b border-slate-100 text-center">
+        <h1 class="text-2xl font-bold flex items-center justify-center gap-2 text-slate-950">
+            <img class="w-[45px] h-[45px]" src="img/lamp.webp" alt=""> Sunu-idée
+        </h1>
+        <p class="text-xs tracking-widest text-slate-400 uppercase mt-1">
+            Tableau blanc collaboratif anonyme
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <section class="lg:col-span-1">
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs sticky top-8">
+                <h2 class="text-lg font-bold text-slate-900">Nouvelle Idée</h2>
+                <p class="text-xs text-slate-400 mt-1 mb-6">
+                    Partagez votre suggestion anonymement avec la communauté.
+                </p>
+                
+                <form id="form-idee" class="space-y-5">
+                    <div>
+                        <label for="titre" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Titre de l'idée</label>
+                        <input type="text" id="titre" required placeholder="Ex: Réorganiser le foyer..." 
+                               class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-hidden focus:border-slate-400">
+                    </div>
+
+                    <div>
+                        <label for="categorie" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Catégorie</label>
+                        <select id="categorie" required 
+                                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-hidden focus:border-slate-400 text-slate-600">
+                            <option value="pedagogie">Pédagogie</option>
+                            <option value="campus">Vie de campus</option>
+                            <option value="technique">Amélioration technique</option>
+                            <option value="evenement">Événement</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Description détaillée</label>
+                        <textarea id="description" required rows="4" placeholder="Expliquez votre concept en quelques phrases..." 
+                                  class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-hidden focus:border-slate-400"></textarea>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-black hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-lg text-sm transition duration-200 flex items-center justify-center gap-2">
+                        Soumettre l'idée <span><i class="fa-solid fa-paper-plane"></i></span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section class="lg:col-span-2">
+            <h2 class="text-xl font-bold text-slate-900 mb-6">Mur des Idées</h2>
+            
+            <div id="mur-idees" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
