@@ -37,6 +37,22 @@ function couleurCategorie(categorie) {
   return couleurs[categorie] || "bg-slate-100 text-slate-700";
 }
 
+
+// AFFICHAGE D'ERREUR
+function afficherErreur(message) {
+    const erreur = document.getElementById("message-erreur");
+    erreur.textContent = message;
+    erreur.classList.remove("hidden");
+}
+
+// CACHEER L'ERREUR
+function cacherErreur() {
+    const erreur = document.getElementById("message-erreur");
+    erreur.textContent = "";
+    erreur.classList.add("hidden");
+}
+
+
 // AFFICHAGE DU MUR
 function afficherLeMur() {
   murDesIdees.innerHTML = "";
@@ -122,50 +138,51 @@ function afficherLeMur() {
 
 // CREATE + UPDATE
 formIdees.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const titre = titreInput.value.trim();
-  const categorie = categorieInput.value;
-  const description = descriptionInput.value.trim();
+    const titre = titreInput.value.trim();
+    const categorie = categorieInput.value;
+    const description = descriptionInput.value.trim();
+    if (!titre || !description) {
+        afficherErreur("Le titre et la description sont obligatoires.");
+        return;
+    }
+    
+    cacherErreur();
 
-  // VALIDATION
-  if (!titre || !description) {
-    return;
-  }
-
-  // CREATE
-  if (!modeEdition) {
-    const nouvelleIdee = {
-      id: Date.now(),
-      titre,
-      categorie,
-      description,
-    };
+    // CREATE
+    if (!modeEdition) {
+        const nouvelleIdee = {
+        id: Date.now(),
+        titre,
+        categorie,
+        description,
+        };
 
     listeDesIdees.unshift(nouvelleIdee);
-  }
+    }
 
   // UPDATE
-  else {
-    const idee = listeDesIdees.find((i) => i.id === idEnCoursEdition);
+    else {
+        const idee = listeDesIdees.find((i) => i.id === idEnCoursEdition);
 
-    if (!idee) return;
+        if (!idee) return;
 
-    idee.titre = titre;
-    idee.categorie = categorie;
-    idee.description = description;
+        idee.titre = titre;
+        idee.categorie = categorie;
+        idee.description = description;
 
-    // RESET MODE EDITION
-    modeEdition = false;
-    idEnCoursEdition = null;
+        // RESET MODE EDITION
+        modeEdition = false;
+        idEnCoursEdition = null;
 
-    formIdees.querySelector("button[type='submit']").innerText =
-      "Soumettre l'idée";
-  }
-  // SAUVEGARDE
-  sauvegarderLesIdees(listeDesIdees);
-  afficherLeMur();
-  formIdees.reset();
+        formIdees.querySelector("button[type='submit']").innerText =
+        "Soumettre l'idée";
+    }
+    // SAUVEGARDE
+    sauvegarderLesIdees(listeDesIdees);
+    afficherLeMur();
+    formIdees.reset();
 });
 
 // EVENT DELEGATION, EDIT + DELETE
