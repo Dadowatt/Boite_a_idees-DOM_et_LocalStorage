@@ -9,14 +9,37 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-    <header class="bg-white py-2 border-b border-slate-100 text-center">
-        <h1 class="text-2xl font-bold flex items-center justify-center gap-2 text-slate-950">
-            <img class="w-[45px] h-[45px]" src="img/lamp.webp" alt=""> Sunu-idée
-        </h1>
-        <p class="text-xs tracking-widest text-slate-400 uppercase mt-1">
-            Tableau blanc collaboratif anonyme
-        </p>
-    </header>
+<header class="bg-white py-4 border-b border-slate-100">
+
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+
+        <div class="text-center md:text-left">
+            <h1 class="text-2xl font-bold flex items-center gap-2 text-slate-950 justify-center md:justify-start">
+                <img class="w-[45px] h-[45px]" src="img/lamp.webp" alt="">
+                Sunu-idée
+            </h1>
+
+            <p class="text-xs tracking-widest text-slate-400 uppercase mt-1">
+                Tableau blanc collaboratif anonyme
+            </p>
+        </div>
+
+        <div>
+            <select id="filtre-categorie"
+                class="px-4 py-2 border border-slate-200 rounded-lg bg-white text-sm focus:outline-hidden focus:border-slate-400">
+
+                <option value="toutes">Toutes les catégories</option>
+                <option value="pedagogie">Pédagogie</option>
+                <option value="campus">Vie de campus</option>
+                <option value="technique">Amélioration technique</option>
+                <option value="evenement">Événement</option>
+
+            </select>
+        </div>
+
+    </div>
+
+</header>
 
     <main class="max-w-6xl mx-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
