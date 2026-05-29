@@ -74,7 +74,6 @@ function formaterDate(date) {
     });
 }
 
-
 // AFFICHAGE D'ERREUR
 function afficherErreur(message) {
     const erreur = document.getElementById("message-erreur");
@@ -82,13 +81,22 @@ function afficherErreur(message) {
     erreur.classList.remove("hidden");
 }
 
-// CACHEER L'ERREUR
+// CACHER L'ERREUR
 function cacherErreur() {
     const erreur = document.getElementById("message-erreur");
     erreur.textContent = "";
     erreur.classList.add("hidden");
 }
 
+// SECURISATION TEXTE
+function sanitizer(texte) {
+    return texte
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 // AFFICHAGE DU MUR
 function afficherLeMur() {
@@ -131,10 +139,10 @@ function afficherLeMur() {
                         </span>
                     </div>
                     <h3 class="font-bold text-slate-900 text-base mb-2">
-                        ${idee.titre}
+                        ${sanitizer(idee.titre)}
                     </h3>
                     <p class="text-slate-500 text-xs leading-relaxed">
-                        ${idee.description}
+                        ${sanitizer(idee.description)}
                     </p>
                 </div>
                 <div class="flex justify-between items-center mt-6 pt-3 border-t border-slate-50 text-[11px] text-slate-400">
