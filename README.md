@@ -1,9 +1,17 @@
 ## Sunu-idée
 
-Sunu-idée est une application web de type tableau blanc collaboratif permettant aux utilisateurs de partager des idées de manière anonyme.  
-Le projet est conçu dans un contexte pédagogique afin de simuler une mini plateforme de gestion d’idées en temps réel.
+## Présentation
 
-L’application fonctionne sans authentification et repose entièrement sur la manipulation du DOM et le stockage local via le LocalStorage.
+Sunu-idée est une application web de type Single Page Application (SPA) permettant de partager des idées de manière anonyme au sein d'une communauté.
+
+Le projet a été réalisé dans le cadre d'un brief pédagogique portant sur la manipulation du DOM, le CRUD en JavaScript et la persistance des données avec le LocalStorage.
+
+---
+## Lien du projet
+
+## Déploiement
+
+https://golden-tartufo-d45625.netlify.app/
 
 ---
 
@@ -16,8 +24,6 @@ L’objectif est de développer une application Single Page Application (SPA) pe
 - Modifier les idées existantes
 - Supprimer des idées
 - Filtrer les idées par catégorie
-- Ajouter des interactions utilisateur (likes)
-- Afficher la date de création de manière dynamique
 
 ---
 
@@ -31,8 +37,14 @@ Un formulaire permet d’ajouter une nouvelle idée avec :
 - Une catégorie (Pédagogie, Vie de campus, Amélioration technique, Événement)
 - Une description
 
-Chaque idée est enregistrée dans le LocalStorage.
+---
 
+## Fonctionnalités complémentaires
+filtrage par catégorie ;
+système de likes ;
+affichage dynamique des dates ;
+sauvegarde automatique dans le LocalStorage ;
+protection contre l'injection HTML (sanitization des données utilisateur).
 ---
 
 ### Affichage des idées
@@ -122,4 +134,4 @@ L’application repose sur :
 
 ## Auteurs
 
-Projet réalisé dans un cadre pédagogique individuel.
+Projet réalisé individuellement dans un cadre pédagogique.
