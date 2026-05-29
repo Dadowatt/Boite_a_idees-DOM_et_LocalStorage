@@ -126,7 +126,7 @@ function afficherLeMur() {
   ideesFiltrees.forEach((idee) => {
     const carteHTML = `
             <div 
-                class="bg-white p-5 rounded-xl border border-slate-100 shadow-xs flex flex-col justify-between min-h-[200px]"
+                class="card-animation bg-white p-5 rounded-xl border border-slate-100 shadow-xs flex flex-col justify-between min-h-[200px]"
                 data-id="${idee.id}">
                 <div>
                     <div class="flex justify-between items-center mb-3">
@@ -147,11 +147,11 @@ function afficherLeMur() {
                 </div>
                 <div class="flex justify-between items-center mt-6 pt-3 border-t border-slate-50 text-[11px] text-slate-400">
                     <div class="flex gap-3">
-                        <button class="btn-editer hover:text-slate-700 transition flex items-center gap-1 cursor-pointer">
+                        <button class="btn-editer text-yellow-600 hover:text-yellow-700 transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-pencil"></i>
                             Éditer
                         </button>
-                        <button class="btn-supprimer hover:text-red-600 transition flex items-center gap-1 cursor-pointer">
+                        <button class="btn-supprimer text-red-600 hover:text-red-700 transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-trash-can"></i>
                             Supprimer
                         </button>
