@@ -40,6 +40,18 @@ function couleurCategorie(categorie) {
   return couleurs[categorie] || "bg-slate-100 text-slate-700";
 }
 
+// TRANSFORMATION DES VALEUR EN TEXTE
+function nomCategorie(categorie) {
+    const noms = {
+        pedagogie: "Pédagogie",
+        campus: "Vie de campus",
+        technique: "Amélioration technique",
+        evenement: "Événement"
+    };
+
+    return noms[categorie] || categorie;
+}
+
 // DATE CREATION
 function formaterDate(date) {
     const maintenant = new Date();
@@ -103,11 +115,9 @@ function afficherLeMur() {
     murDesIdees.innerHTML = "";
 
     const ideesFiltrees =
-        categorieActive === "toutes"
-            ? listeDesIdees
-            : listeDesIdees.filter(
-                (idee) => idee.categorie === categorieActive
-        );
+    categorieActive === "toutes"
+        ? listeDesIdees
+        : listeDesIdees.filter(i => i.categorie === categorieActive);
 
     // ETAT VIDE
     if (ideesFiltrees.length === 0) {
@@ -125,37 +135,63 @@ function afficherLeMur() {
   // AFFICHAGE DES CARTES
   ideesFiltrees.forEach((idee) => {
     const carteHTML = `
-            <div 
-                class="card-animation bg-white p-5 rounded-xl border border-slate-100 shadow-xs flex flex-col justify-between min-h-[200px]"
-                data-id="${idee.id}">
-                <div>
+                        <div 
+                        class="card-animation p-5 rounded-xl border shadow-xs flex flex-col justify-between min-h-[200px]
+                        ${idee.archive 
+                            ? 'bg-slate-100 border-slate-300' 
+                            : 'bg-white border-slate-100'
+                        }"
+                        data-id="${idee.id}">
+                    <div>
                     <div class="flex justify-between items-center mb-3">
 
+                        <div class="flex items-center gap-2">
                         <span class="${couleurCategorie(idee.categorie)} text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                            ${idee.categorie}
+                            ${nomCategorie(idee.categorie)}
                         </span>
+
+                        ${idee.archive ? `
+                            <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                                Archivé
+                            </span>
+                        ` : ""}
+                        </div>
+
                         <span class="text-[10px] text-slate-400">
                             ${formaterDate(idee.date)}
                         </span>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-base mb-2">
+                    <h3 class="font-bold text-base mb-2
+                        ${idee.archive ? 'line-through text-slate-400' : 'text-slate-900'}">
                         ${sanitizer(idee.titre)}
                     </h3>
-                    <p class="text-slate-500 text-xs leading-relaxed">
+                    <p class="text-xs leading-relaxed
+                        ${idee.archive ? 'line-through text-slate-400' : 'text-slate-500'}">
                         ${sanitizer(idee.description)}
                     </p>
                 </div>
                 <div class="flex justify-between items-center mt-6 pt-3 border-t border-slate-50 text-[11px] text-slate-400">
+                        ${idee.archive ? `
                     <div class="flex gap-3">
-                        <button class="btn-editer text-yellow-600 hover:text-yellow-700 transition flex items-center gap-1 cursor-pointer">
-                            <i class="fa-solid fa-pencil"></i>
-                            Éditer
-                        </button>
-                        <button class="btn-supprimer text-red-600 hover:text-red-700 transition flex items-center gap-1 cursor-pointer">
+                       <button class="btn-supprimer text-red-600 hover:text-red-700 cursor-pointer transition duration-200 hover:scale-110">
                             <i class="fa-solid fa-trash-can"></i>
-                            Supprimer
                         </button>
                     </div>
+                ` : `
+                    <div class="flex gap-3">
+                        <button class="btn-editer text-yellow-600 hover:text-yellow-700 cursor-pointer transition duration-200 hover:scale-110">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button class="btn-archiver text-blue-600 hover:text-blue-700 cursor-pointer transition duration-200 hover:scale-110">
+                            <i class="fa-solid fa-box-archive"></i>
+                        </button>
+
+                        <button class="btn-supprimer text-red-600 hover:text-red-700 cursor-pointer transition duration-200 hover:scale-110">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `}
                     <button class="btn-like flex items-center gap-1 font-medium transition cursor-pointer
                         ${idee.liked ? "text-blue-600" : "text-slate-600 hover:text-blue-600"}">
                         <i class="fa-solid fa-thumbs-up"></i>${idee.likes}
@@ -166,6 +202,18 @@ function afficherLeMur() {
 
     murDesIdees.insertAdjacentHTML("beforeend", carteHTML);
   });
+}
+
+// ARCHIVE
+function archiverIdee(id) {
+    const idee = listeDesIdees.find(i => i.id === id);
+
+    if (!idee) return;
+
+    idee.archive = true;
+
+    sauvegarderLesIdees(listeDesIdees);
+    afficherLeMur();
 }
 
 // FLITRAGE PAR CATEGORIE
@@ -198,6 +246,7 @@ formIdees.addEventListener("submit", (e) => {
         likes: 0,
         liked: false,
         date: new Date().toISOString(),
+        archive: false
         };
 
     listeDesIdees.unshift(nouvelleIdee);
@@ -257,6 +306,15 @@ murDesIdees.addEventListener("click", (e) => {
 
         const id = Number(carte.dataset.id);
         chargerFormulaireEdition(id);
+        return;
+    }
+
+    // ARCHIVE
+    const btnArchiver = e.target.closest(".btn-archiver");
+    if (btnArchiver) {
+        const carte = btnArchiver.closest("[data-id]");
+        const id = Number(carte.dataset.id);
+        archiverIdee(id);
         return;
     }
 });
