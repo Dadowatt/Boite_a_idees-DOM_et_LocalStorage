@@ -16,7 +16,7 @@
 
         <div class="text-center md:text-left">
             <h1 class="text-2xl font-bold flex items-center gap-2 text-slate-950 justify-center md:justify-start">
-                <img class="w-[45px] h-[45px]" src="img/lamp.webp" alt="">
+                <img class="w-[45px] h-[45px]" src="img/lamp.webp" alt="Logo Sunu idées">
                 Sunu-idée
             </h1>
 
@@ -55,7 +55,7 @@
                 <form id="form-idee" class="space-y-5">
                     <div>
                         <label for="titre" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Titre de l'idée</label>
-                        <input type="text" id="titre" required placeholder="Ex: Réorganiser le foyer..." 
+                        <input type="text" id="titre" required maxlength="60" placeholder="Ex: Réorganiser le foyer..." 
                             class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition">
                     </div>
 
@@ -72,7 +72,7 @@
 
                     <div>
                         <label for="description" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Description détaillée</label>
-                        <textarea id="description" required rows="4" placeholder="Expliquez votre concept en quelques phrases..." 
+                        <textarea id="description" required maxlength="300" rows="4" placeholder="Expliquez votre concept en quelques phrases..." 
                             class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"></textarea>
                     </div>
                     
@@ -80,9 +80,9 @@
                     class="hidden text-red-500 text-sm font-medium">
                     </p>
 
-                    <button type="submit" 
+                    <button type="submit" id="btn"
                             class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg text-sm transition duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
-                        Soumettre l'idée <span><i class="fa-solid fa-paper-plane"></i></span>
+                       <span><i class="fa-solid fa-paper-plane"></i></span> Soumettre l'idée 
                     </button>
                 </form>
             </div>
