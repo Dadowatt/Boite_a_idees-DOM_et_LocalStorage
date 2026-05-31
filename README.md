@@ -40,11 +40,15 @@ Un formulaire permet d’ajouter une nouvelle idée avec :
 ---
 
 ## Fonctionnalités complémentaires
-filtrage par catégorie ;
-système de likes ;
-affichage dynamique des dates ;
-sauvegarde automatique dans le LocalStorage ;
-protection contre l'injection HTML (sanitization des données utilisateur).
+
+- filtrage par catégorie ;
+- système de likes ;
+- affichage dynamique des dates ;
+- sauvegarde automatique dans le LocalStorage ;
+- protection contre l'injection HTML (sanitization des données utilisateur) ;
+- système d’archivage des idées permettant de marquer une idée comme traitée sans la supprimer ;
+- affichage différencié des idées archivées (fond grisé, texte barré et badge "Archivé") ;
+
 ---
 
 ### Affichage des idées
