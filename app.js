@@ -105,15 +105,6 @@ function sanitizer(texte) {
 }
 
 
-/**********************************************************
- * SYNCHRONISATION DES DONNÉES
- * Sauvegarde l'état actuel des idées dans le localStorage
- **********************************************************/
-function refreshUI() {
-  sauvegarderLesIdees(listeDesIdees);
-}
-
-
 /****************************************************
  * CONSTRUCTION DU MUR D'IDÉES
  ****************************************************/
