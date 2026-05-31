@@ -106,6 +106,17 @@ function sanitizer(texte) {
 
 
 /*************************************************
+ * REFRESH GLOBAL DE L'APPLICATION
+ * - Sauvegarde les données
+ * - Met à jour l'affichage du mur
+ *************************************************/
+function refreshUI() {
+  sauvegarderLesIdees(listeDesIdees);
+  afficherLeMur();
+}
+
+
+/*************************************************
  * 5. UI (AFFICHAGE + INTERFACE)
  *************************************************/
 
@@ -118,7 +129,7 @@ function afficherLeMur() {
       ? listeDesIdees
       : listeDesIdees.filter((i) => i.categorie === categorieActive);
 
-  // Si aucune idée et aucune catégorie
+  // 1. CAS GLOBAL : aucune idée du tout
   if (listeDesIdees.length === 0) {
     murDesIdees.innerHTML = `
       <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
@@ -129,7 +140,7 @@ function afficherLeMur() {
     `;
     return;
   }
-
+  // 2. CAS FILTRE : des idées existent mais pas dans cette catégorie
   if (ideesFiltrees.length === 0) {
     murDesIdees.innerHTML = `
       <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
@@ -275,8 +286,7 @@ function archiverIdee(id) {
 
   idee.archive = true;
 
-  sauvegarderLesIdees(listeDesIdees);
-  afficherLeMur();
+  refreshUI();
 }
 
 // Like une idée
@@ -292,8 +302,7 @@ function likerIdee(id) {
     idee.liked = false;
   }
 
-  sauvegarderLesIdees(listeDesIdees);
-  afficherLeMur();
+  refreshUI();
 }
 
 // Supprimer une idée
@@ -302,9 +311,7 @@ function supprimerIdee(id) {
   if (!confirmation) return;
 
   listeDesIdees = listeDesIdees.filter((idee) => idee.id !== id);
-
-  sauvegarderLesIdees(listeDesIdees);
-  afficherLeMur();
+  refreshUI();
 }
 
 // Charger une idée dans le formulaire pour édition
@@ -379,8 +386,7 @@ formIdees.addEventListener("submit", (e) => {
     desactiverModeEdition();
   }
 
-  sauvegarderLesIdees(listeDesIdees);
-  afficherLeMur();
+  refreshUI();
   formIdees.reset();
 });
 
