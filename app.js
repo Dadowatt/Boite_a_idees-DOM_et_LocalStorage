@@ -118,12 +118,23 @@ function afficherLeMur() {
       ? listeDesIdees
       : listeDesIdees.filter((i) => i.categorie === categorieActive);
 
-  // Si aucune idée
-  if (ideesFiltrees.length === 0) {
+  // Si aucune idée et aucune catégorie
+  if (listeDesIdees.length === 0) {
     murDesIdees.innerHTML = `
       <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
         <p class="text-slate-400 text-sm">
           Aucune idée publiée pour le moment.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  if (ideesFiltrees.length === 0) {
+    murDesIdees.innerHTML = `
+      <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+        <p class="text-slate-400 text-sm">
+          Aucune idée dans cette catégorie pour le moment.
         </p>
       </div>
     `;
