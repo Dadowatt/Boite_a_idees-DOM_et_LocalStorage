@@ -15,7 +15,7 @@ const filtreCategorie = document.getElementById("filtre-categorie");
 
 
 /*************************************************
- * 2. ETAT GLOBAL
+ * 2. ETAT GLOBAL (STATE)
  *************************************************/
 
 let listeDesIdees = chargerLesIdees();
@@ -152,6 +152,35 @@ function afficherLeMur() {
   });
 }
 
+// Affiche une erreur
+function afficherErreur(message) {
+  const erreur = document.getElementById("message-erreur");
+  erreur.textContent = message;
+  erreur.classList.remove("hidden");
+}
+
+// Cache l'erreur
+function cacherErreur() {
+  const erreur = document.getElementById("message-erreur");
+  erreur.textContent = "";
+  erreur.classList.add("hidden");
+}
+
+// Active le mode édition
+function activerModeEdition() {
+  btnSubmit.textContent = "Mettre à jour";
+
+  btnSubmit.classList.remove("from-blue-500", "to-indigo-600");
+  btnSubmit.classList.add("from-yellow-400", "to-yellow-500");
+}
+
+// Désactive le mode édition
+function desactiverModeEdition() {
+  btnSubmit.textContent = "Soumettre l'idée";
+
+  btnSubmit.classList.remove("from-yellow-400", "to-yellow-500");
+  btnSubmit.classList.add("from-blue-500", "to-indigo-600");
+}
 
 /*****************************************************
  * GÉNÉRATION D'UNE CARTE D'IDÉE
