@@ -11,7 +11,7 @@ Le projet a été réalisé dans le cadre d'un brief pédagogique portant sur la
 
 ## Déploiement
 
-https://golden-tartufo-d45625.netlify.app/
+https://sunuidees.netlify.app/
 
 ---
 
