@@ -15,7 +15,7 @@ const filtreCategorie = document.getElementById("filtre-categorie");
 
 
 /*************************************************
- * 2. ETAT GLOBAL (STATE)
+ * 2. ETAT GLOBAL
  *************************************************/
 
 let listeDesIdees = chargerLesIdees();
@@ -44,7 +44,7 @@ function sauvegarderLesIdees(idees) {
 
 
 /*************************************************
- * 4. HELPERS (UTILITAIRES)
+ * 4. HELPERS
  *************************************************/
 
 // Retourne la classe Tailwind selon la catégorie
@@ -71,7 +71,7 @@ function nomCategorie(categorie) {
   return noms[categorie] || categorie;
 }
 
-// Formate la date d'une idée (temps relatif)
+// Formate la date d'une idée
 function formaterDate(date) {
   const maintenant = new Date();
   const dateIdee = new Date(date);
@@ -105,22 +105,18 @@ function sanitizer(texte) {
 }
 
 
-/*************************************************
- * REFRESH GLOBAL DE L'APPLICATION
- * - Sauvegarde les données
- * - Met à jour l'affichage du mur
- *************************************************/
+/**********************************************************
+ * SYNCHRONISATION DES DONNÉES
+ * Sauvegarde l'état actuel des idées dans le localStorage
+ **********************************************************/
 function refreshUI() {
   sauvegarderLesIdees(listeDesIdees);
-  afficherLeMur();
 }
 
 
-/*************************************************
- * 5. UI (AFFICHAGE + INTERFACE)
- *************************************************/
-
-// Affiche toutes les idées sur le mur
+/****************************************************
+ * CONSTRUCTION DU MUR D'IDÉES
+ ****************************************************/
 function afficherLeMur() {
   murDesIdees.innerHTML = "";
 
@@ -129,7 +125,6 @@ function afficherLeMur() {
       ? listeDesIdees
       : listeDesIdees.filter((i) => i.categorie === categorieActive);
 
-  // 1. CAS GLOBAL : aucune idée du tout
   if (listeDesIdees.length === 0) {
     murDesIdees.innerHTML = `
       <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
@@ -140,7 +135,7 @@ function afficherLeMur() {
     `;
     return;
   }
-  // 2. CAS FILTRE : des idées existent mais pas dans cette catégorie
+
   if (ideesFiltrees.length === 0) {
     murDesIdees.innerHTML = `
       <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
@@ -152,9 +147,17 @@ function afficherLeMur() {
     return;
   }
 
-  // Création des cartes
   ideesFiltrees.forEach((idee) => {
-    const carteHTML = `
+    murDesIdees.insertAdjacentHTML("beforeend", creerCarteHTML(idee));
+  });
+}
+
+
+/*****************************************************
+ * GÉNÉRATION D'UNE CARTE D'IDÉE
+ *****************************************************/
+function creerCarteHTML(idee) {
+  return `
       <div 
         class="card-animation p-5 rounded-xl border shadow-xs flex flex-col justify-between min-h-[200px]
         ${idee.archive ? "bg-slate-100 border-slate-300" : "bg-white border-slate-100"}"
@@ -239,57 +242,39 @@ function afficherLeMur() {
 
       </div>
     `;
-
-    murDesIdees.insertAdjacentHTML("beforeend", carteHTML);
-  });
-}
-
-// Affiche une erreur
-function afficherErreur(message) {
-  const erreur = document.getElementById("message-erreur");
-  erreur.textContent = message;
-  erreur.classList.remove("hidden");
-}
-
-// Cache l'erreur
-function cacherErreur() {
-  const erreur = document.getElementById("message-erreur");
-  erreur.textContent = "";
-  erreur.classList.add("hidden");
-}
-
-// Active le mode édition (UI bouton)
-function activerModeEdition() {
-  btnSubmit.textContent = "Mettre à jour";
-
-  btnSubmit.classList.remove("from-blue-500", "to-indigo-600");
-  btnSubmit.classList.add("from-yellow-400", "to-yellow-500");
-}
-
-// Désactive le mode édition (UI bouton)
-function desactiverModeEdition() {
-  btnSubmit.textContent = "Soumettre l'idée";
-
-  btnSubmit.classList.remove("from-yellow-400", "to-yellow-500");
-  btnSubmit.classList.add("from-blue-500", "to-indigo-600");
 }
 
 
-/*************************************************
- * 6. LOGIQUE METIER (CRUD)
- *************************************************/
+/**************************************************
+ * MISE À JOUR D'UNE CARTE
+ **************************************************/
+function updateCarte(id) {
+  const idee = listeDesIdees.find((i) => i.id === id);
+  const ancienneCarte = murDesIdees.querySelector(`[data-id="${id}"]`);
 
-// Archive une idée
+  if (!idee || !ancienneCarte) return;
+
+  ancienneCarte.outerHTML = creerCarteHTML(idee);
+}
+
+
+
+/***************************************************************
+ * ARCHIVAGE D'UNE IDÉE
+ ***************************************************************/
 function archiverIdee(id) {
   const idee = listeDesIdees.find((i) => i.id === id);
   if (!idee) return;
 
   idee.archive = true;
 
-  refreshUI();
+  sauvegarderLesIdees(listeDesIdees);
+  updateCarte(id); // Actualise uniquement la carte concernée
 }
 
-// Like une idée
+/***************************************************
+ * GESTION DES LIKES
+ ***************************************************/
 function likerIdee(id) {
   const idee = listeDesIdees.find((i) => i.id === id);
   if (!idee) return;
@@ -302,19 +287,30 @@ function likerIdee(id) {
     idee.liked = false;
   }
 
-  refreshUI();
+  sauvegarderLesIdees(listeDesIdees);
+  updateCarte(id); 
 }
 
-// Supprimer une idée
+
+/***************************************************
+ * SUPPRESSION D'UNE IDÉE
+ ***************************************************/
 function supprimerIdee(id) {
   const confirmation = confirm("Voulez-vous vraiment supprimer cette idée ?");
   if (!confirmation) return;
 
   listeDesIdees = listeDesIdees.filter((idee) => idee.id !== id);
-  refreshUI();
+
+  sauvegarderLesIdees(listeDesIdees);
+
+  const carte = murDesIdees.querySelector(`[data-id="${id}"]`);
+  if (carte) carte.remove();
 }
 
-// Charger une idée dans le formulaire pour édition
+
+/****************************************************
+ * CHARGEMENT D'UNE IDÉE EN ÉDITION
+ ****************************************************/
 function chargerFormulaireEdition(id) {
   const idee = listeDesIdees.find((i) => i.id === id);
   if (!idee) return;
@@ -334,13 +330,12 @@ function chargerFormulaireEdition(id) {
  * 7. EVENTS
  *************************************************/
 
-// Filtrage des catégories
 filtreCategorie.addEventListener("change", () => {
   categorieActive = filtreCategorie.value;
   afficherLeMur();
 });
 
-// Submit formulaire (CREATE + UPDATE)
+
 formIdees.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -355,7 +350,6 @@ formIdees.addEventListener("submit", (e) => {
 
   cacherErreur();
 
-  // CREATE
   if (!modeEdition) {
     const nouvelleIdee = {
       id: Date.now(),
@@ -369,10 +363,10 @@ formIdees.addEventListener("submit", (e) => {
     };
 
     listeDesIdees.unshift(nouvelleIdee);
-  }
 
-  // UPDATE
-  else {
+    sauvegarderLesIdees(listeDesIdees);
+    afficherLeMur(); 
+  } else {
     const idee = listeDesIdees.find((i) => i.id === idEnCoursEdition);
     if (!idee) return;
 
@@ -384,13 +378,15 @@ formIdees.addEventListener("submit", (e) => {
     idEnCoursEdition = null;
 
     desactiverModeEdition();
+
+    sauvegarderLesIdees(listeDesIdees);
+    updateCarte(idee.id);
   }
 
-  refreshUI();
   formIdees.reset();
 });
 
-// Event delegation sur les cartes
+
 murDesIdees.addEventListener("click", (e) => {
   const btnLike = e.target.closest(".btn-like");
   if (btnLike) {
@@ -420,11 +416,6 @@ murDesIdees.addEventListener("click", (e) => {
     return;
   }
 });
-
-
-/*************************************************
- * 8. INITIALISATION
- *************************************************/
 
 // Chargement initial du mur
 afficherLeMur();
