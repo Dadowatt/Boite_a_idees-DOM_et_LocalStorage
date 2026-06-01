@@ -118,7 +118,7 @@ function afficherLeMur() {
 
   if (listeDesIdees.length === 0) {
     murDesIdees.innerHTML = `
-      <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+      <div class="message-vide col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
         <p class="text-slate-400 text-sm">
           Aucune idée publiée pour le moment.
         </p>
@@ -129,9 +129,9 @@ function afficherLeMur() {
 
   if (ideesFiltrees.length === 0) {
     murDesIdees.innerHTML = `
-      <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+      <div class="message-vide col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
         <p class="text-slate-400 text-sm">
-          Aucune idée à afficher.
+          Aucune idée à afficher pour cette catégorie.
         </p>
       </div>
     `;
@@ -274,9 +274,12 @@ function updateCarte(id) {
 
   if (!idee || !ancienneCarte) return;
 
-  ancienneCarte.outerHTML = creerCarteHTML(idee);
+  if (categorieActive === "toutes" || categorieActive === idee.categorie) {
+    ancienneCarte.outerHTML = creerCarteHTML(idee);
+  } else {
+    afficherLeMur();
+  }
 }
-
 
 
 /***************************************************************
@@ -324,8 +327,7 @@ function supprimerIdee(id) {
 
   sauvegarderLesIdees(listeDesIdees);
 
-  const carte = murDesIdees.querySelector(`[data-id="${id}"]`);
-  if (carte) carte.remove();
+  afficherLeMur();
 }
 
 
@@ -356,11 +358,10 @@ filtreCategorie.addEventListener("change", () => {
 });
 
 
-formIdees.addEventListener("submit", (e) => {
+formIdees.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const titre = titreInput.value.trim();
-  const categorie = categorieInput.value;
   const description = descriptionInput.value.trim();
 
   if (!titre || !description) {
@@ -369,6 +370,31 @@ formIdees.addEventListener("submit", (e) => {
   }
 
   cacherErreur();
+
+  let categorie;
+
+  try {
+    if (modeEdition) {
+      // Mode édition : catégorie manuelle
+      categorie = categorieInput.value;
+    } else {
+      // Mode création : IA
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Analyse en cours...";
+
+      categorie = await detecterCategorieIA(titre, description);
+    }
+  } catch (error) {
+    console.error("Erreur IA :", error);
+    categorie = "campus";
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = "Soumettre l'idée";
+  }
+
+  /*************************************************
+   * AJOUT OU MISE À JOUR CENTRALISÉ
+   *************************************************/
 
   if (!modeEdition) {
     const nouvelleIdee = {
@@ -383,15 +409,22 @@ formIdees.addEventListener("submit", (e) => {
     };
 
     listeDesIdees.unshift(nouvelleIdee);
-
     sauvegarderLesIdees(listeDesIdees);
-    murDesIdees.insertAdjacentHTML(
-    "afterbegin",
-    creerCarteHTML(nouvelleIdee)
-    ) 
+
+    afficherLeMur();
+/*************************************************
+   * MODE ÉDITION
+*************************************************/
   } else {
     const idee = listeDesIdees.find((i) => i.id === idEnCoursEdition);
-    if (!idee) return;
+
+    if (!idee) {
+      modeEdition = false;
+      idEnCoursEdition = null;
+      desactiverModeEdition();
+      formIdees.reset();
+      return;
+    }
 
     idee.titre = titre;
     idee.categorie = categorie;
@@ -401,9 +434,9 @@ formIdees.addEventListener("submit", (e) => {
     idEnCoursEdition = null;
 
     desactiverModeEdition();
-
     sauvegarderLesIdees(listeDesIdees);
-    updateCarte(idee.id);
+
+    afficherLeMur();
   }
 
   formIdees.reset();
@@ -442,3 +475,60 @@ murDesIdees.addEventListener("click", (e) => {
 
 // Chargement initial du mur
 afficherLeMur();
+
+
+// INTÉGRATION DE L'IA
+async function detecterCategorieIA(titre, description) {
+  try {
+    const prompt = `
+Tu es un système de classification.
+
+Tu dois choisir UNE seule catégorie parmi :
+
+pedagogie
+campus
+technique
+evenement
+
+Règles :
+- cours, enseignants, examens, apprentissage => pedagogie
+- vie étudiante, bibliothèque, restauration, logement => campus
+- application, site web, informatique, logiciel => technique
+- conférence, atelier, compétition, activité => evenement
+
+Réponds uniquement par un de ces 4 mots.
+N'ajoute aucune explication.
+
+Titre : ${titre}
+
+Description : ${description}
+`;
+
+    const response = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gemma2:2b",
+        prompt,
+        stream: false,
+      }),
+    });
+
+    const data = await response.json();
+    const categorieBrute = data.response.trim().toLowerCase().replace(/[^a-z]/g, "");
+
+    const categoriesValides = ["pedagogie", "campus", "technique", "evenement"];
+
+    const categorie = categoriesValides.includes(categorieBrute)
+      ? categorieBrute
+      : "technique";
+
+    return categorie;
+
+  } catch (error) {
+    console.error("Erreur Ollama :", error);
+    return "technique";
+  }
+}
