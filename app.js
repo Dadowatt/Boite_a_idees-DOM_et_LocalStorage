@@ -131,7 +131,7 @@ function afficherLeMur() {
     murDesIdees.innerHTML = `
       <div class="col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
         <p class="text-slate-400 text-sm">
-          Aucune idée dans cette catégorie pour le moment.
+          Aucune idée à afficher.
         </p>
       </div>
     `;
@@ -308,7 +308,8 @@ function likerIdee(id) {
   }
 
   sauvegarderLesIdees(listeDesIdees);
-  updateCarte(id); 
+
+  updateCarte(id);
 }
 
 
@@ -349,7 +350,6 @@ function chargerFormulaireEdition(id) {
 /*************************************************
  * 7. EVENTS
  *************************************************/
-
 filtreCategorie.addEventListener("change", () => {
   categorieActive = filtreCategorie.value;
   afficherLeMur();
@@ -385,7 +385,10 @@ formIdees.addEventListener("submit", (e) => {
     listeDesIdees.unshift(nouvelleIdee);
 
     sauvegarderLesIdees(listeDesIdees);
-    afficherLeMur(); 
+    murDesIdees.insertAdjacentHTML(
+    "afterbegin",
+    creerCarteHTML(nouvelleIdee)
+    ) 
   } else {
     const idee = listeDesIdees.find((i) => i.id === idEnCoursEdition);
     if (!idee) return;
