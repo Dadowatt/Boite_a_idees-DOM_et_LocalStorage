@@ -521,9 +521,7 @@ Description : ${description}
 
     const categoriesValides = ["pedagogie", "campus", "technique", "evenement"];
 
-    const categorie = categoriesValides.includes(categorieBrute)
-      ? categorieBrute
-      : "technique";
+    const categorie = categoriesValides.includes(categorieBrute) ? categorieBrute : "technique";
 
     return categorie;
 
